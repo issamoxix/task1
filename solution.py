@@ -1,7 +1,5 @@
 from bs4 import BeautifulSoup 
 import json
-import os 
-
 
 class crawler:
     def __init__(self,Htmlfile):
@@ -39,7 +37,7 @@ class crawler:
             self.Rpts = self.dom.select('span.js--hp-scorecard-scoreval')[0].get_text()
             return 1
         except:
-            return print('Error in the Header Part !')
+            print('Error in the Header Part !')
             return 0
     def getBodyData(self):
         try:
@@ -78,8 +76,6 @@ class crawler:
         except:
             print('Error in The dump !')
             return 0 
-    def DisplayData(self):
-        return self.Data
     def DumptoJson(self,new_data, filename='data.json'):
         try:
             with open(filename,'r+') as file:
@@ -88,7 +84,6 @@ class crawler:
                 file.seek(0)
                 json.dump(file_data, file)
                 print('Data been Scraped !')
-                input('Press Enter To Exit !')
                 return 1
         except:
             try:
@@ -99,27 +94,15 @@ class crawler:
             except:
                 print('Error Data entery  (DumptoJson Function) !')
                 return 0
+    def Get_all_Data(self):
+        try:
+            self.getFooter()
+            self.getBodyfooter()
+            self.getBodyData()
+            self.getHeaderData()
+            self.DumpData()
+            self.DumptoJson(self.Data[0])
+            return 1
+        except:
+            return 0 
 
-#loop thru files from the same derictory
-for i in os.listdir():
-        if '.html' in i:
-            print(i)
-def ChooseFile():
-    #enter the file name if it is in the same directory if not enter the path
-    file = input('Enter File name : ')
-    if not os.path.isfile(file):
-        return ChooseFile()
-    if '.html' not in file:
-        print('Enter html file !')
-        return ChooseFile()
-    return file
-
-
-web = crawler(ChooseFile())
-web.getFooter()
-web.getBodyfooter()
-web.getBodyData()
-web.getHeaderData()
-web.DumpData()
-
-web.DumptoJson(web.DisplayData()[0])
